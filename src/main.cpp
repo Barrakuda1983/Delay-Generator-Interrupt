@@ -27,26 +27,50 @@ const byte signal_input = 2;
 const byte signal_output = 13;
 
 // Startwert der einzustellenden Variablen
-uint8_t delay_time = 20;      // in Millisekunden
-uint8_t puls_time = 2;        // in Millisekunden
+uint32_t delay_time = 20;            // in Millisekunden
+uint32_t puls_time = 2;              // in Millisekunden
 bool einstellung_ok = false;
-uint8_t menu = 1;             // Menü-Variable
+uint8_t menu = 1;                   // Menü-Variable
+unsigned long previousMillis = 0;   // Varaible zumspeichern des aktuell Millis-Wert, als Global, da in der Funktion gelöscht werden würde.
 
 // Delay Funktion in der sich Generator im Normalbetrieb befindet.
 void delay_begin(){
-  uint8_t waitD = delay_time;
-  uint8_t waitP = puls_time;
+                /*
+                unsigned long currentMillis;
+                bool finish = true;
+                previousMillis = millis();
+                
+                while (finish)
+                {
+                  currentMillis = millis();
+                  if (currentMillis - previousMillis >= delay_time){
+                      previousMillis = currentMillis;
+                      digitalWrite(signal_output,HIGH);
+                
+                      if (currentMillis - previousMillis >= (delay_time+puls_time)){
+                      previousMillis = currentMillis;
+                      digitalWrite(signal_output,LOW);
+                      finish = false;
+                      }
+                  }
+                  
+                }
+                Serial.println(previousMillis);
+*/
+  
+  uint32_t waitD = delay_time*570;
+  uint32_t waitP = puls_time*570;
   while(waitD > 0){
-    _delay_ms(1);
+    _delay_us(1);
     waitD--;
   }
   digitalWrite(signal_output,HIGH);
-
   while(waitP > 0){
-    _delay_ms(1);
+    _delay_us(1);
     waitP--;
   }
-digitalWrite(signal_output,LOW);
+  digitalWrite(signal_output,LOW);
+
 }
 
 void setup() {
@@ -54,6 +78,7 @@ void setup() {
   pinMode(signal_input,INPUT);
   pinMode(signal_output,OUTPUT);
   pinMode(A0, INPUT);
+  //Serial.begin(9600);
   
   // Schleife zum Einstellen der Variablen
   do {
